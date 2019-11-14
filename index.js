@@ -1,6 +1,13 @@
+const { getOptions } = require('loader-utils')
+const defaultOptions = {
+    postfix: '?__2x'
+}
 module.exports = function (source) {
-	const imgs = source.match(/(background|background-image)\:\s*url\((\S*)\)?__2x\)[\s\w-]*\;/g)
+	const options = Object.assign(defaultOptions, getOptions(this))
+	const reg = new RegExp(`(background|background-image)\\:\\s*url\\((\\S*)\\)${options.postfix}\\)[\\s\\w-]*\\;`, 'g')
+	const imgs = source.match(reg)
 	let str = source
+	// console.log(imgs)
     if (imgs && imgs.length) {
         imgs.forEach(item => {
             let fix = item.match(/\w\.(\S*)\?/)[1]
